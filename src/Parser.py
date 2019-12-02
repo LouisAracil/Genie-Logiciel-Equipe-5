@@ -37,7 +37,7 @@ class Parser:
 
 	# Pas encore testé.
 	def abstract(self, content):
-		result = ""
+		result = []
 		successiveLineFeed = 0
 		inAbstact = False	# True si la ligne courante est après le début du résumé
 		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre )
@@ -50,21 +50,19 @@ class Parser:
 					inAbstact = True
 					span = match.span()
 					# result = "".join([result, match[span:]])	# Pas besoin de concaténantion car c'est le début du résumé. La variable est donc vide.
-					result = line[span[1]:].strip()
+					result.append(line[span[1]:].strip())
 			else:
 				# La line appartient peut-être au résumé
-				if line == "" and result != "":	# Saut de ligne, donc, fin du résumé
+				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé
+											# len(result) == 1, car il faut, dans ce cas, qu'il n'y ait pas plus d'une ligne.
 					break
 
-				if line == "" and result == "":	# Saut de ligne, donc, fin du résumé
+				if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne, donc, fin du résumé
 					continue
 				
 				# Sinon, la ligne est dans le résumé.
-				if result == "":	# Pour éviter d'avoir un espace au début de l'abstract
-					result = "\t" + line.strip()
-				else:
-					result = "\n\t".join([result, line.strip()])
-				
+				if line != result[-1]:
+					result.append(line.strip())
 		
 		return result
 
@@ -84,7 +82,7 @@ class Parser:
 				break
 			else:
 				result = " ".join([result, line])
-		return result
+		return result.strip()
 
 
 	def __del__(self):

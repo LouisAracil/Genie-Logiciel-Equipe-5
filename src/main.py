@@ -33,8 +33,8 @@ if __name__ == "__main__":
 		print(
 			"Nom du fichier :\n\t", 
 			txt["name"],
-			"\nTitre :\n", 
+			"\nTitre :\n\t", 
 			txt["title"],
 			"\nAbstract :\n", 
-			txt["abstract"],
+			"\t" + txt["abstract"][0] + "\n\t".join(txt["abstract"][1:]),
 			end="\n\n")
