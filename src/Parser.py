@@ -14,8 +14,8 @@ class Parser:
 		os.system("> {}".format(self.__tmpFile))
 
 	def extractText(self, fileName):
-		self.__fileName = fileName;
-		os.system("{}{}".format(self.__cmd, fileName))
+		self.__fileName = fileName.replace("\\ ", " ").replace("\ ", " ").replace(" ", "\ ");
+		os.system("{}{}".format(self.__cmd, self.__fileName))
 
 		file = open(self.__tmpFile, 'r')
 		content = file.read()
