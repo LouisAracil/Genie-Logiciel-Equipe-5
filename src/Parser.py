@@ -28,7 +28,7 @@ class Parser:
 
 		txt = {}
 		txt["name"] = os.path.basename(self.__fileName).replace('\\','').strip()
-		# txt["title"] = self.title(content)
+		txt["title"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 
 		# name = os.path.basename(self.__fileName)
@@ -68,23 +68,24 @@ class Parser:
 		
 		return result
 
-	# Pas terminé.
-	def title(self, content, headSpan):
-		header = content
-		if headSpan != None:
-			header = content[:headSpan]	# Pour réduire zone de recherche afin de gagner en précision.
 
-		pass
-		# premier + saut de ligne si ':' MAIS manque : saut de ligne autrement et si pas 1er
+	def title(self, content):
+		result = ""
+		successiveLineFeed = 0
+		partialTitle = self.__fileName
+		partialTitle.split("_", 2)[2]
 
-		deletionList = [
-#			"Available online at www.sciencedirect.com",	# Doit être pris en charge par un eexpression régulière.
-			"Procedia.* [0-9]{3}–[0-9]{3}",
-#			"www.elsevier.com/locate/procedia",
-#			"November 17-19 2018, Dubai, United Arab Emirates",
-			"[a-z]+\.[a-z\-_\.]\.[a-z]+\/?.*"
-#			"www.elsevier.com/locate/procedia"
-		]
+		for line in content:
+			match = re.search(partialTitle, line.lower())
+			if match != None :
+				span = match.span()
+				result = line[span[1]:]
+			if line == "" and result != "":	# Saut de ligne, donc, fin du titre
+				break
+			else:
+				result = " ".join([result, line])
+		return result
+
 
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
