@@ -31,16 +31,14 @@ class Parser:
 		txt["title"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 
-		# name = os.path.basename(self.__fileName)
-		# return name, self.title(content), self.abstract(content)
 		return txt
 
 	# Pas encore testé.
 	def abstract(self, content):
 		result = []
 		successiveLineFeed = 0
-		inAbstact = False	# True si la ligne courante est après le début du résumé
-		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre )
+		inAbstact = False	# True si la ligne courante est après le début du résumé.
+		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre ).
 
 		for line in content:
 			if not inAbstact:
@@ -49,15 +47,13 @@ class Parser:
 				if match != None :
 					inAbstact = True
 					span = match.span()
-					# result = "".join([result, match[span:]])	# Pas besoin de concaténantion car c'est le début du résumé. La variable est donc vide.
 					result.append(line[span[1]:].strip())
 			else:
-				# La line appartient peut-être au résumé
-				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé
-											# len(result) == 1, car il faut, dans ce cas, qu'il n'y ait pas plus d'une ligne.
+				# La line appartient peut-être au résumé.
+				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
 					break
 
-				if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne, donc, fin du résumé
+				if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début de résumé.
 					continue
 				
 				# Sinon, la ligne est dans le résumé.
@@ -78,7 +74,7 @@ class Parser:
 			if match != None :
 				span = match.span()
 				result = line[span[1]:]
-			if line == "" and result != "":	# Saut de ligne, donc, fin du titre
+			if line == "" and result != "":	# Saut de ligne, donc, fin du titre.
 				break
 			else:
 				result = " ".join([result, line])
