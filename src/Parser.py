@@ -27,7 +27,7 @@ class Parser:
 		content = self.extractText(fileName)
 
 		txt = {}
-		txt["name"] = os.path.basename(self.__fileName).replace('\\','')
+		txt["name"] = os.path.basename(self.__fileName).replace('\\','').strip()
 		# txt["title"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 
@@ -61,11 +61,10 @@ class Parser:
 				
 				# Sinon, la ligne est dans le résumé.
 				if result == "":	# Pour éviter d'avoir un espace au début de l'abstract
-					result = result + line
+					result = "\t" + line.strip()
 				else:
-					result = " ".join([result, line])
+					result = "\n\t".join([result, line.strip()])
 				
-				result = result.strip()
 		
 		return result
 

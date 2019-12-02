@@ -28,4 +28,13 @@ if __name__ == "__main__":
 		# for line in file:
 		# 	print("\033[33m{}\033[0m".format(line))
 		
-		print(parser.parse(file), end="\n\n")
+		txt = parser.parse(file)
+
+		print(
+			"Nom du fichier :\n\t", 
+			txt["name"],
+			# "\nTitre :\n", 
+			# txt["title"],
+			"\nAbstract :\n", 
+			txt["abstract"],
+			end="\n\n")
