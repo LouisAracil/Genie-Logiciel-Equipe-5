@@ -28,7 +28,7 @@ class Parser:
 
 		txt = {}
 		txt["name"] = os.path.basename(self.__fileName)
-		txt["title"] = self.title(content)
+		# txt["title"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 
 		# name = os.path.basename(self.__fileName)
@@ -36,7 +36,7 @@ class Parser:
 		return txt
 
 	# Pas encore testé.
-	def abstract(content):
+	def abstract(self, content):
 		result = ""
 		successiveLineFeed = 0
 		inAbstact = False	# True si la ligne courante est après le début du résumé
@@ -44,23 +44,31 @@ class Parser:
 
 		for line in content:
 			if not inAbstact:
-				match = re.search("[Aa]bstract[—-\. ]", content)
+				# match = re.search("[Aa]bstract[—-\. ]", content)
+				match = re.search("abstract", line.lower())
 				if match != None :
 					inAbstact = True
 					span = match.span()
-					# result = "".join([result, match[span:]])
-					result = match[span:]	# Pas besoin de concaténantion car c'est le début du résumé. La variable est donc vide.
+					# result = "".join([result, match[span:]])	# Pas besoin de concaténantion car c'est le début du résumé. La variable est donc vide.
+					result = line[span[1]:]
 			else:
 				# La line appartient peut-être au résumé
-				if re.search("^\s*$", content):	# Saut de ligne, donc, fin du résumé
-					# if successiveLineFeed == 1:
+				if line == "" and result != "":	# Saut de ligne, donc, fin du résumé
 					break
 
+				if line == "" and result == "":	# Saut de ligne, donc, fin du résumé
+					continue
+				
 				# Sinon, la ligne est dans le résumé.
-				result = " ".join([result, match[span:]])
+				if result == "":	# Pour éviter d'avoir un espace au début de l'abstract
+					result = result + line
+				else:
+					result = " ".join([result, line])
+		
+		return result
 
 	# Pas terminé.
-	def title(content, headSpan):
+	def title(self, content, headSpan):
 		header = content
 		if headSpan != None:
 			header = content[:headSpan]	# Pour réduire zone de recherche afin de gagner en précision.
