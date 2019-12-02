@@ -27,7 +27,7 @@ class Parser:
 		content = self.extractText(fileName)
 
 		txt = {}
-		txt["name"] = os.path.basename(self.__fileName)
+		txt["name"] = os.path.basename(self.__fileName).replace('\\','')
 		# txt["title"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 
