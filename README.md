@@ -8,4 +8,4 @@ Pour récupérer l'abstract, le programme cherche le mot "abstract" et récupèr
 Pour le nom du fichier, il prend le nom du fichier, il exécute un basename et un replace pour retirer les antislash.
 
 
-Pour exécuter le programme, il faut exécuter le fichier main (dans un terminal : python main.py).
+Pour exécuter le programme, il faut exécuter le fichier main (dans un terminal : python3 main.py).
