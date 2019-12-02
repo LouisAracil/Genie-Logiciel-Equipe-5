@@ -50,7 +50,7 @@ class Parser:
 					inAbstact = True
 					span = match.span()
 					# result = "".join([result, match[span:]])	# Pas besoin de concaténantion car c'est le début du résumé. La variable est donc vide.
-					result = line[span[1]:]
+					result = line[span[1]:].strip()
 			else:
 				# La line appartient peut-être au résumé
 				if line == "" and result != "":	# Saut de ligne, donc, fin du résumé
@@ -64,6 +64,8 @@ class Parser:
 					result = result + line
 				else:
 					result = " ".join([result, line])
+				
+				result = result.strip()
 		
 		return result
 
