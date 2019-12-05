@@ -1,0 +1,61 @@
+commit dec8ded1f21f4391b89b75a619070a47f8ae831a
+Merge: 590c233 f2877f0
+Author: Virgile Sucal <virgile.sucal@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:55:53 2019 +0100
+
+    Add Exception handling
+    
+    Add exception handling for the parameters given to the program.
+    Add help display when option '-h', or error.
+
+commit 590c2337d018f40186156a8624c3c11c8a9f1628
+Author: Virgile Sucal <virgile.sucal@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:55:50 2019 +0100
+
+    Add exception handling
+
+commit f2877f0d6d7ea0fa20ccc96d0d3a340c5f687dff
+Author: Ilona Fresu <ilona.fresu@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:52:49 2019 +0100
+
+    modification fonction auteur
+
+commit be6a8933d983db85f6c712b91096989e41ca4e5f
+Merge: 5dd2138 ef631a8
+Author: Ilona Fresu <ilona.fresu@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:50:14 2019 +0100
+
+    Merge branch 'v2' of https://github.com/LouisAracil/Genie-Logiciel-Equipe-5 into v2
+
+commit ef631a838516c93b3ffe77dc2173611c5de74a23
+Author: LouisAracil <louis.aracil@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:48:59 2019 +0100
+
+    Delete launcher.sh
+
+commit 5dd2138de218901bfee5cf4a2799a853afb17a18
+Merge: ffc6eba 983570c
+Author: Ilona Fresu <ilona.fresu@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:48:37 2019 +0100
+
+    Merge branch 'v2' of https://github.com/LouisAracil/Genie-Logiciel-Equipe-5 into v2
+
+commit ffc6eba7306bd4028bd966f59d6ffdcae4ec5446
+Author: Ilona Fresu <ilona.fresu@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:47:36 2019 +0100
+
+    ajout de la fonction titre (ne trouve pas de match)
+
+commit 983570c73238903475c9c4cd8abaa5214efe31c7
+Author: Virgile Sucal <virgile.sucal@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:46:12 2019 +0100
+
+    Fix minor errors in main.py
+
+commit 95168b7390c6b719b85c481e9924200051fea777
+Author: Aracil Louis <louis.aracil@alumni.univ-avignon.fr>
+Date:   Thu Dec 5 10:43:55 2019 +0100
+
+    Update main.py
+
+commit bbd771d1ab224c14fb25e17dc8b1cbbb2d320a8f
