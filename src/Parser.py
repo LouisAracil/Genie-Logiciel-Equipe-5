@@ -123,7 +123,7 @@ class Parser:
 		txt = {}	# Dictionnaire de listes.
 		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
 		txt["auteur"] = ""
-		txt["auteur"] = self.author(content)
+		# txt["auteur"] = self.author(content) + " (" + self.authorAddress(content) + ")"
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 		txt["biblio"] = ""
