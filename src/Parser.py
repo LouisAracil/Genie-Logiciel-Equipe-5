@@ -81,21 +81,21 @@ class Parser:
 		return [result.strip()]
 
 	def author(self,content):
-	fullTitle = self.title(content)
-	authors = ""
-	successiveLineFeed = 0
-	partialAuthor = self.__fileName.split("_",1)[0]
-	print(fullTitle)
-	for line in content:
-		match = re.search(fullTitle, line)
-		
-		if match != None :
-			span = match.span()
-			authors = line[span[1]:]
-			break
-			if line == "" and authors != "":	# Saut de ligne, donc, fin du titre.
-				return authors.strip()
+		fullTitle = self.title(content)
+		authors = ""
+		successiveLineFeed = 0
+		partialAuthor = self.__fileName.split("_",1)[0]
+		print(fullTitle)
+		for line in content:
+			match = re.search(fullTitle, line)
+			
+			if match != None :
+				span = match.span()
+				authors = line[span[1]:]
 				break
+				if line == "" and authors != "":	# Saut de ligne, donc, fin du titre.
+					return authors.strip()
+					break
 	return partialAuthor
 
 	def __del__(self):
