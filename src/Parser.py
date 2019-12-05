@@ -96,7 +96,26 @@ class Parser:
 				if line == "" and authors != "":	# Saut de ligne, donc, fin du titre.
 					return authors.strip()
 					break
-	return partialAuthor
+		return partialAuthor
+
+	def authorAddress(self, content):
+        authors = self.author(content)
+		address = ""
+		successiveLineFeed = 0
+
+		for line in content:
+			match = re.search(authors, line.lower())
+			if match != None :
+				address = line
+                while re.search("abstract", line.lower()) == None :
+                    address += line
+            
+			if line == "" and address != "":	# Saut de ligne, donc, fin du titre.
+				break
+			else:
+				address = " ".join([address, line])
+		
+        return address.strip()
 
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
