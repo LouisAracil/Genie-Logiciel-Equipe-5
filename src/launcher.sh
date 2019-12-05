@@ -2,5 +2,5 @@
 
 for file in ls $1/*.pdf
 do
-	python3 $file
+	python3 main.py $file
 done
