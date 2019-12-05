@@ -13,12 +13,12 @@ option = sys.argv[1]
 parser = Parser()	
 
 if option == '-t':
-	for file in glob.glob(path + '*.pdf'):
+	for file in glob.glob(path + '/*.pdf'):
 		print(file)
 		print(parser.parseTxt(file))
 	
 elif option == '-x':
-	for file in glob.glob(path + '*.pdf'):
+	for file in glob.glob(path + '/*.pdf'):
 		print(parser.parseXML(file))
 
 else :
