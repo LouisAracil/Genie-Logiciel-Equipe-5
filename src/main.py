@@ -17,7 +17,6 @@ except:
 	print(help)
 	exit()
 
-
 parser = Parser()	
 
 if option == '-t':
