@@ -14,24 +14,23 @@ class Parser:
 		os.system("> {}".format(self.__tmpFile))
 
 	def extractText(self, fileName):
-		self.__fileName = fileName.replace("\\ ", " ").replace("\ ", " ").replace(" ", "\ ");
-		os.system("{}{}".format(self.__cmd, self.__fileName))
+		if self.__fileName != fileName:
+			self.__fileName = fileName.replace("\\ ", " ").replace("\ ", " ").replace(" ", "\ ")
+			# # self.__fileName = "\"" + fileName.replace("\\ ", " ").replace("\ ", " ") + "\""
+			# fileName = fileName.replace("\\ ", " ")
+			# fileName = fileName.replace("\ ", " ")
+			# fileName = fileName.replace(" ", "\ ")
+			# self.__fileName = fileName
+			os.system("{}{}".format(self.__cmd, self.__fileName))
 
-		file = open(self.__tmpFile, 'r')
-		content = file.read()
-		file.close
+			file = open(self.__tmpFile, 'r')
+			content = file.read()
+			file.close
 
-		return content.split('\n');
-
-	def parse(self, fileName):
-		content = self.extractText(fileName)
-
-		txt = {}
-		txt["name"] = os.path.basename(self.__fileName).replace('\\','').strip()
-		txt["title"] = self.title(content)
-		txt["abstract"] = self.abstract(content)
-
-		return txt
+			return content.split('\n');
+		
+		else:
+				return self.__fileName
 
 	# Pas encore testé.
 	def abstract(self, content):
@@ -48,6 +47,7 @@ class Parser:
 					inAbstact = True
 					span = match.span()
 					result.append(line[span[1]:].strip())
+
 			else:
 				# La line appartient peut-être au résumé.
 				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
@@ -57,7 +57,7 @@ class Parser:
 					continue
 				
 				# Sinon, la ligne est dans le résumé.
-				if line != result[-1]:
+				if line != result[-1] and line.lower().strip() != "abstract":
 					result.append(line.strip())
 		
 		return result
@@ -78,9 +78,53 @@ class Parser:
 				break
 			else:
 				result = " ".join([result, line])
-		return result.strip()
+		return [result.strip()]
 
 
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
+
+	def parse(self, fileName):
+		content = self.extractText(fileName)
+
+		txt = {}	# Dictionnaire de listes.
+		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
+		txt["auteur"] = ""
+		txt["titre"] = self.title(content)
+		txt["abstract"] = self.abstract(content)
+		txt["biblio"] = ""
+
+		return txt
+
+	def parseTxt(self, fileName):
+		txt = self.parse(fileName)
+
+		xmlContent = []
+
+		for key in txt.keys():
+			xmlContent.append(key + " :")
+			for line in txt[key]:
+				xmlContent.append("\t" + line)
+
+		return "\n".join(xmlContent)
+
+	def parseXML(self, fileName):
+		txt = self.parse(fileName)
+
+		xmlContent = []
+		header = ["<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<article>"]
+		footer = "</article>"
+
+		xmlContent.extend(header)
+
+		for key in txt.keys():
+			xmlContent.append("\t<" + key + ">")
+			for line in txt[key]:
+				xmlContent.append("\t\t" + line)
+			xmlContent.append("\t</" + key + ">")
+		
+		xmlContent.append(footer)
+
+		return "\n".join(xmlContent)
+
 
