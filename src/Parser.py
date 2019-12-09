@@ -81,21 +81,15 @@ class Parser:
 		return [result.strip()]
 
 	def author(self,content):
-		fullTitle = self.title(content)
 		authors = ""
 		successiveLineFeed = 0
-		partialAuthor = self.__fileName.split("_",1)[0]
-		print(fullTitle)
+		partialAuthor = os.path.basename(self.__fileName).replace('\\','').strip().split("_",1)[0]
 		for line in content:
-			match = re.search(fullTitle, line)
-			
-			if match != None :
-				span = match.span()
-				authors = line[span[1]:]
-				break
-				if line == "" and authors != "":	# Saut de ligne, donc, fin du titre.
-					return authors.strip()
-					break
+			if partialAuthor in line:
+				#for i in range(0,len(line)):
+				#	if ord(line[i]) <= 64 or ord(line[i]) >= 91 or ord(line[i]) <= 96 or ord(line[i]) >= 123:
+				#		result += line.replace(line[i],"")
+				return line
 		return partialAuthor
 
 	def authorAddress(self,content):
@@ -123,7 +117,8 @@ class Parser:
 		txt = {}	# Dictionnaire de listes.
 		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
 		txt["auteur"] = ""
-		# txt["auteur"] = self.author(content) + " (" + self.authorAddress(content) + ")"
+		# txt["auteur"] = [self.author(content) + " " + self.authorAddress(content)]
+		txt["auteur"] = [self.author(content)]
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 		txt["biblio"] = ""
