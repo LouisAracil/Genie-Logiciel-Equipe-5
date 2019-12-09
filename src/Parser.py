@@ -133,14 +133,15 @@ class Parser:
 	def parseTxt(self, fileName):
 		txt = self.parse(fileName)
 
-		xmlContent = []
+		txtContent = []
 
 		for key in txt.keys():
-			xmlContent.append(key + " :")
+			txtContent.append(key + " :")
 			for line in txt[key]:
-				xmlContent.append("\t" + line)
+				txtContent.append("\t" + line)
+			txtContent.append("");
 
-		return "\n".join(xmlContent)
+		return "\n".join(txtContent)
 
 	def parseXML(self, fileName):
 		txt = self.parse(fileName)
@@ -158,6 +159,7 @@ class Parser:
 			xmlContent.append("\t</" + key + ">")
 		
 		xmlContent.append(footer)
+		xmlContent.append("");
 
 		return "\n".join(xmlContent)
 
