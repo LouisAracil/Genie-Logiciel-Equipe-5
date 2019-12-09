@@ -128,17 +128,8 @@ class Parser:
 					result.append(line[span[1]:].strip())
 					
 			else:
-				# # La line appartient peut-être au résumé.
-				# if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin des références.
-				# 	break
-
-				# if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début des références.
-				# 	continue
-				
-				#Sinon, la ligne est dans les références.
 				if line != result[-1] and line.lower().strip() != "references":
 					result.append(line.strip())
-				#result.append(line.strip())
 		return result
 
 
@@ -163,7 +154,8 @@ class Parser:
 
 		txtContent = []
 
-		for key in txt.keys():
+		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+
 			txtContent.append(key + " :")
 			for line in txt[key]:
 				txtContent.append("\t" + line)
@@ -180,7 +172,8 @@ class Parser:
 
 		xmlContent.extend(header)
 
-		for key in txt.keys():
+		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+
 			xmlContent.append("\t<" + key + ">")
 			for line in txt[key]:
 				xmlContent.append("\t\t" + line)
