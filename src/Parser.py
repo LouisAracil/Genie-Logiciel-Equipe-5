@@ -114,6 +114,34 @@ class Parser:
 				address = " ".join([address, line])
 		return address.strip()
 
+	def references(self, content):
+		result = []
+		successiveLineFeed = 0
+		inReferences = False
+		
+		for line in content:
+			if not inReferences:
+				match = re.match("^\s*references\s*$",line.lower())
+				if match != None :
+					inReferences = True
+					span = match.span()
+					result.append(line[span[1]:].strip())
+					
+			else:
+				# # La line appartient peut-être au résumé.
+				# if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin des références.
+				# 	break
+
+				# if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début des références.
+				# 	continue
+				
+				#Sinon, la ligne est dans les références.
+				if line != result[-1] and line.lower().strip() != "references":
+					result.append(line.strip())
+				#result.append(line.strip())
+		return result
+
+
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
 
@@ -126,7 +154,7 @@ class Parser:
 		# txt["auteur"] = self.author(content) + " (" + self.authorAddress(content) + ")"
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
-		txt["biblio"] = ""
+		txt["biblio"] = self.references(content)
 
 		return txt
 
