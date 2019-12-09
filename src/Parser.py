@@ -95,17 +95,15 @@ class Parser:
 	def authorAddress(self,content):
 		authors = self.author(content)
 		address = ""
+		authorsFound = False
 		successiveLineFeed = 0
 		for line in content:
-			match = re.search(authors, line.lower())
-			if match != None :
-				address = line
-				while re.search("abstract", line.lower()) == None :
-					address += line
-			if line == "" and address != "":	# Saut de ligne, donc, fin du titre.
+			if authorsFound == True:
+				address += line
+			elif authors in line:
+				authorsFound = True
+			elif "abstract" in line.lower() :
 				break
-			else:
-				address = " ".join([address, line])
 		return address.strip()
 
 	def references(self, content):
@@ -136,8 +134,8 @@ class Parser:
 		txt = {}	# Dictionnaire de listes.
 		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
 		txt["auteur"] = ""
-		# txt["auteur"] = [self.author(content) + " " + self.authorAddress(content)]
-		txt["auteur"] = [self.author(content)]
+		txt["auteur"] = [self.author(content) + " " + self.authorAddress(content)]
+		#txt["auteur"] = [self.author(content)]
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 		txt["biblio"] = self.references(content)
