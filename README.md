@@ -1,5 +1,7 @@
 # Genie-Logiciel-Equipe-5
 
+## Tests pour le choix du langage
+
 Les tests effectués consistent en une boucle qui ouvre 12345 fois un fichier de test afin de connaître la durée d'exécution de chaque langage.
 
 ## Fonctionnement du programme
