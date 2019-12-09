@@ -108,6 +108,25 @@ class Parser:
 				address = " ".join([address, line])
 		return address.strip()
 
+	def references(self, content):
+		result = []
+		successiveLineFeed = 0
+		inReferences = False
+		
+		for line in content:
+			if not inReferences:
+				match = re.match("^\s*references\s*$",line.lower())
+				if match != None :
+					inReferences = True
+					span = match.span()
+					result.append(line[span[1]:].strip())
+					
+			else:
+				if line != result[-1] and line.lower().strip() != "references":
+					result.append(line.strip())
+		return result
+
+
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
 
@@ -121,21 +140,23 @@ class Parser:
 		txt["auteur"] = [self.author(content)]
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
-		txt["biblio"] = ""
+		txt["biblio"] = self.references(content)
 
 		return txt
 
 	def parseTxt(self, fileName):
 		txt = self.parse(fileName)
 
-		xmlContent = []
+		txtContent = []
 
-		for key in txt.keys():
-			xmlContent.append(key + " :")
+		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+
+			txtContent.append(key + " :")
 			for line in txt[key]:
-				xmlContent.append("\t" + line)
+				txtContent.append("\t" + line)
+			txtContent.append("");
 
-		return "\n".join(xmlContent)
+		return "\n".join(txtContent)
 
 	def parseXML(self, fileName):
 		txt = self.parse(fileName)
@@ -146,13 +167,15 @@ class Parser:
 
 		xmlContent.extend(header)
 
-		for key in txt.keys():
+		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+
 			xmlContent.append("\t<" + key + ">")
 			for line in txt[key]:
 				xmlContent.append("\t\t" + line)
 			xmlContent.append("\t</" + key + ">")
 		
 		xmlContent.append(footer)
+		xmlContent.append("");
 
 		return "\n".join(xmlContent)
 
