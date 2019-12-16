@@ -34,12 +34,15 @@ class Parser:
 
 	# Pas encore testé.
 	def abstract(self, content):
+		lineNumber = 0;
 		result = []
 		successiveLineFeed = 0
 		inAbstact = False	# True si la ligne courante est après le début du résumé.
 		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre ).
 
 		for line in content:
+			line += 1
+
 			if not inAbstact:
 				# match = re.search("[Aa]bstract[—-\. ]", content)
 				match = re.search("abstract", line.lower())
@@ -60,7 +63,7 @@ class Parser:
 				if line != result[-1] and line.lower().strip() != "abstract":
 					result.append(line.strip())
 		
-		return result
+		return result, line
 
 
 	def title(self, content):
@@ -124,6 +127,40 @@ class Parser:
 					result.append(line.strip())
 		return result
 
+	def introduction(self, content, abstractLastLine):
+		result = []
+		successiveLineFeed = 0
+		inAbstact = False	# True si la ligne courante est après le début du résumé.
+		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre ).
+
+		for line in content[abstractLastLine:]:
+			if not inAbstact:
+				# match = re.search("[Aa]bstract[—-\. ]", content)
+				match = re.search("introduction", line.lower())
+				if match != None :
+					inAbstact = True
+					span = match.span()
+					result.append(line[span[1]:].strip())
+
+			else:
+				# La line appartient peut-être au résumé.
+				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
+					break
+
+				if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début de résumé.
+					continue
+				
+				# Sinon, la ligne est dans le résumé.
+				if line != result[-1] and line.lower().strip() != "abstract":
+					result.append(line.strip())
+		
+		return result
+
+	def corps(self, content):
+		pass
+
+	def conclusion(self, content):
+		pass
 
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
@@ -137,7 +174,11 @@ class Parser:
 		# txt["auteur"] = [self.author(content), self.authorAddress(content)]
 		txt["auteur"] = [self.author(content)]
 		txt["titre"] = self.title(content)
-		txt["abstract"] = self.abstract(content)
+		abstract, abstractLastLine = self.abstract(content)
+		txt["abstract"] = abstract
+		txt["introduction"] = self.introduction(content, abstractLastLine)
+		# txt["corps"] = self.corps(content)
+		# txt["conclusion"] = self.conclusion(content)
 		txt["biblio"] = self.references(content)
 
 		return txt
