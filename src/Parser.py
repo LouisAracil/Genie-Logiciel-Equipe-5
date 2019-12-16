@@ -10,6 +10,12 @@ class Parser:
 		self.__tmpFile = tmpFileName
 		self.__fileName = ""
 		self.__cmd = "pdf2txt -o {} ".format(self.__tmpFile)
+		self.keys = ["preamble", "auteur", "titre", "abstract", 
+			"introduction", 
+			# "corps", 
+			# "conclusion", 
+			# "discussion", 
+			"biblio"]
 
 		os.system("> {}".format(self.__tmpFile))
 
@@ -41,7 +47,7 @@ class Parser:
 		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre ).
 
 		for line in content:
-			line += 1
+			lineNumber += 1
 
 			if not inAbstact:
 				# match = re.search("[Aa]bstract[—-\. ]", content)
@@ -63,7 +69,7 @@ class Parser:
 				if line != result[-1] and line.lower().strip() != "abstract":
 					result.append(line.strip())
 		
-		return result, line
+		return result, lineNumber
 
 
 	def title(self, content):
@@ -128,14 +134,15 @@ class Parser:
 		return result
 
 	def introduction(self, content, abstractLastLine):
+		lineNumber = abstractLastLine
 		result = []
 		successiveLineFeed = 0
 		inAbstact = False	# True si la ligne courante est après le début du résumé.
 		firstLine = 0;		# Premiere ligne du résumé. Utile pour déterminer la zone contenant le titre (entre ).
 
 		for line in content[abstractLastLine:]:
+			lineNumber += 1
 			if not inAbstact:
-				# match = re.search("[Aa]bstract[—-\. ]", content)
 				match = re.search("introduction", line.lower())
 				if match != None :
 					inAbstact = True
@@ -154,13 +161,7 @@ class Parser:
 				if line != result[-1] and line.lower().strip() != "abstract":
 					result.append(line.strip())
 		
-		return result
-
-	def corps(self, content):
-		pass
-
-	def conclusion(self, content):
-		pass
+		return result, lineNumber
 
 	def __del__(self):
 		os.system("rm {}".format(self.__tmpFile))
@@ -176,9 +177,11 @@ class Parser:
 		txt["titre"] = self.title(content)
 		abstract, abstractLastLine = self.abstract(content)
 		txt["abstract"] = abstract
-		txt["introduction"] = self.introduction(content, abstractLastLine)
+		intro, introLastNumber = self.introduction(content, abstractLastLine)
+		txt["introduction"] = intro
 		# txt["corps"] = self.corps(content)
 		# txt["conclusion"] = self.conclusion(content)
+		# txt["discussion"] = self.discussion(content)
 		txt["biblio"] = self.references(content)
 
 		return txt
@@ -188,7 +191,7 @@ class Parser:
 
 		txtContent = []
 
-		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+		for key in self.keys:
 
 			txtContent.append(key + " :")
 			for line in txt[key]:
@@ -206,7 +209,7 @@ class Parser:
 
 		xmlContent.extend(header)
 
-		for key in ["preamble", "auteur", "titre", "abstract", "biblio"]:
+		for key in self.keys:
 
 			xmlContent.append("\t<" + key + ">")
 			for line in txt[key]:
