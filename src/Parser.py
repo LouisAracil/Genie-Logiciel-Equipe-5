@@ -96,14 +96,15 @@ class Parser:
 		authors = self.author(content)
 		address = ""
 		authorsFound = False
-		successiveLineFeed = 0
 		for line in content:
-			if authorsFound == True:
-				address += line
-			elif authors in line:
-				authorsFound = True
-			elif "abstract" in line.lower() :
+			match = re.search("abstract", line.lower())
+			if match != None :
 				break
+			elif authorsFound == True:
+				address += line
+			elif authors in line and authorsFound == False:
+				authorsFound = True
+			
 		return address.strip()
 
 	def references(self, content):
@@ -136,6 +137,7 @@ class Parser:
 		txt["auteur"] = ""
 		txt["auteur"] = [self.author(content) + " " + self.authorAddress(content)]
 		#txt["auteur"] = [self.author(content)]
+		#txt["introduction"] = self.intro(content)
 		txt["titre"] = self.title(content)
 		txt["abstract"] = self.abstract(content)
 		txt["biblio"] = self.references(content)
