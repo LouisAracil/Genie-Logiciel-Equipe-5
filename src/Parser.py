@@ -76,7 +76,7 @@ class Parser:
 		result = ""
 		successiveLineFeed = 0
 		partialTitle = self.__fileName
-		partialTitle.split("_", 2)[2]
+		# partialTitle.split("_", 2)[2]
 
 		for line in content:
 			match = re.search(partialTitle, line.lower())
