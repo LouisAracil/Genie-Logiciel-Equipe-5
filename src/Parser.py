@@ -181,7 +181,7 @@ class Parser:
 		return result, lineNumber
 
 
-	def conclusion(self, content):
+	def conclusion(self, content, introLastLine):
 		result = []
 		successiveLineFeed = 0
 		inConclusion = False
@@ -190,34 +190,35 @@ class Parser:
 
 		for line in content:
 			lineNumber += 1
-			if not inConclusion:
-				match = re.search("conclusion", line.lower())
-				if match != None :
-					firstLine = lineNumber
-					inConclusion = True
-					span = match.span()
-					result.append(line[span[1]:].strip())
+			if introLastLine == lineNumber:
+				if not inConclusion:
+					match = re.search("conclusion", line.lower())
+					if match != None :
+						firstLine = lineNumber
+						inConclusion = True
+						span = match.span()
+						result.append(line[span[1]:].strip())
 
-					
-			else:
+						
+				else:
 
-					# La line appartient peut-être au résumé.
-				match = re.search("references", line.lower())
-				if match != None and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
-					break
+						# La line appartient peut-être au résumé.
+					match = re.search("references", line.lower())
+					if match != None and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
+						break
 
-				match = re.search("acknowledgements", line.lower())
-				if match != None and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
-					break
+					match = re.search("acknowledgements", line.lower())
+					if match != None and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
+						break
 
-				if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début de résumé.
-					continue
-			
-				# Sinon, la ligne est dans le résumé.
-				if line != result[-1] and line.lower().strip() != "conclusion":
-					result.append(line.strip())
+					if line == "" and len(result) == 1 and result[0] == "":	# Saut de ligne en début de résumé.
+						continue
+				
+					# Sinon, la ligne est dans le résumé.
+					if line != result[-1] and line.lower().strip() != "conclusion":
+						result.append(line.strip())
 
-		return result, lineNumber
+		return result, firstLine
 
 
 	def __del__(self):
@@ -228,17 +229,17 @@ class Parser:
 
 		txt = {}	# Dictionnaire de listes.
 		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
-		txt["auteur"] = ""
+		# txt["auteur"] = ""
 		txt["auteur"] = [self.author(content), self.authorAddress(content)]
 		txt["titre"] = self.title(content)
 		abstract, abstractLastLine = self.abstract(content)
 		txt["abstract"] = abstract
 		intro, introLastNumber = self.introduction(content, abstractLastLine)
 		txt["introduction"] = intro
-		conclusion, conclusionFirstLine = self.conclusion(content)
+		conclusion, conclusionFirstLine = self.conclusion(content, introLastNumber)
 		corps, corpsLastNumber = self.corps(content,introLastNumber,conclusionFirstLine)
 		txt["corps"] = corps
-		txt["conclusion"] = self.conclusion(content)
+		txt["conclusion"] = conclusion
 		# txt["discussion"] = self.discussion(content)
 		txt["biblio"] = self.references(content)
 
@@ -250,7 +251,7 @@ class Parser:
 		txtContent = []
 
 		for key in self.keys:
-
+			
 			txtContent.append(key + " :")
 			for line in txt[key]:
 				txtContent.append("\t" + line)
