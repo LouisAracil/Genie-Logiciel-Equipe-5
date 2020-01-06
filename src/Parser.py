@@ -12,7 +12,7 @@ class Parser:
 		self.__cmd = "pdf2txt -o {} ".format(self.__tmpFile)
 		self.keys = ["preamble", "auteur", "titre", "abstract", 
 			"introduction", 
-			# "corps", 
+			"corps", 
 			"conclusion", 
 			# "discussion", 
 			"biblio"]
@@ -151,7 +151,7 @@ class Parser:
 					result.append(line[span[1]:].strip())
 
 			else:
-				# La line appartient peut-être au résumé.
+				# La ligne appartient peut-être au résumé.
 				if line == "" and (len(result) > 1 or len(result) == 1 and result[0] != ""):	# Saut de ligne, donc, fin du résumé.
 					break
 
@@ -164,18 +164,40 @@ class Parser:
 		
 		return result, lineNumber
 
+	def corps(self, content, introductionLastLine, conclusionFirstLine):
+		lineNumber = introductionLastLine
+		result = []
+		successiveLineFeed = 0
+		# inCorps = False
+		
+		for line in content[introductionLastLine: ]:
+			lineNumber+=1
+			if lineNumber != conclusionFirstLine:
+					result.append(line.strip())
+					
+			else:
+					break
+
+		return result, lineNumber
+
+
 	def conclusion(self, content):
 		result = []
 		successiveLineFeed = 0
 		inConclusion = False
-		
+		firstLine = 0
+		lineNumber = 0
+
 		for line in content:
+			lineNumber += 1
 			if not inConclusion:
 				match = re.search("conclusion", line.lower())
 				if match != None :
+					firstLine = lineNumber
 					inConclusion = True
 					span = match.span()
 					result.append(line[span[1]:].strip())
+
 					
 			else:
 
@@ -195,7 +217,7 @@ class Parser:
 				if line != result[-1] and line.lower().strip() != "conclusion":
 					result.append(line.strip())
 
-		return result
+		return result, lineNumber
 
 
 	def __del__(self):
@@ -208,13 +230,14 @@ class Parser:
 		txt["preamble"] = [os.path.basename(self.__fileName).replace('\\','').strip()]
 		txt["auteur"] = ""
 		txt["auteur"] = [self.author(content), self.authorAddress(content)]
-		# txt["auteur"] = [self.author(content)]
 		txt["titre"] = self.title(content)
 		abstract, abstractLastLine = self.abstract(content)
 		txt["abstract"] = abstract
 		intro, introLastNumber = self.introduction(content, abstractLastLine)
 		txt["introduction"] = intro
-		# txt["corps"] = self.corps(content)
+		conclusion, conclusionFirstLine = self.conclusion(content)
+		corps, corpsLastNumber = self.corps(content,introLastNumber,conclusionFirstLine)
+		txt["corps"] = corps
 		txt["conclusion"] = self.conclusion(content)
 		# txt["discussion"] = self.discussion(content)
 		txt["biblio"] = self.references(content)
